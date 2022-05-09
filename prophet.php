@@ -142,11 +142,12 @@ class Prophet
         ]);
 
         //debug
-        $log_cpu = ($data['cpu']['user'] + $data['cpu']['system'] + $data['cpu']['iowait']) * 100 . '%';
+        $log_cpu = ($data['cpu']['user'] + $data['cpu']['system'] + $data['cpu']['iowait']) / 100 . '%';
         $log_mem_free = $this->bytes_fomat($data['mem']['free']);
-        $net_rx = $this->bytes_fomat($data['net']['recv_bytes']);
-        $net_tx = $this->bytes_fomat($data['net']['send_bytes']);
-        $this->debug("Prophet collect data：CPU[{$log_cpu}] MEM[{$log_mem_free}] NETWORK[rx:{$net_rx}|tx:{$net_tx}]");
+        $net_rx = $this->bytes_fomat($data['net'][0]['recv_bytes']);
+        $net_tx = $this->bytes_fomat($data['net'][0]['send_bytes']);
+        $net_interface = $data['net'][0]['interface'];
+        $this->debug("Prophet collect data：CPU[{$log_cpu}] MEM Free[{$log_mem_free}] NETWORK[{$net_interface}|rx:{$net_rx}|tx:{$net_tx}]");
     }
 
     /**
@@ -305,19 +306,16 @@ class Prophet
         //计算各项参数
         $return = [];
         foreach ($t1 as $key => $value) {
-            $return[$key] = [
+            if ($value['recv_packets'] === 0 && $value['recv_bytes'] === 0 && $value['send_packets'] === 0 && $value['send_bytes'] === 0) {
+                continue;
+            }
+            $return[] = [
+                'interface' => $key,
                 'recv_packets' => ($t2[$key]['recv_packets'] - $t1[$key]['recv_packets']),
                 'recv_bytes' => ($t2[$key]['recv_bytes'] - $t1[$key]['recv_bytes']),
                 'send_packets' => ($t2[$key]['send_packets'] - $t1[$key]['send_packets']),
                 'send_bytes' => ($t2[$key]['send_bytes'] - $t1[$key]['send_bytes']),
             ];
-        }
-
-        //移除数据为0的项目
-        foreach ($return as $key => $value) {
-            if ($value['recv_packets'] === 0 && $value['recv_bytes'] === 0 && $value['send_packets'] === 0 && $value['send_bytes'] === 0) {
-                unset($return[$key]);
-            }
         }
 
         return $return;
@@ -340,10 +338,10 @@ class Prophet
                 if (strpos($dev_name, 'lo') === false && strpos($dev_name, 'ifb') === false) {
                     //获取发送和接收的数据包数量以及字节数
                     $net[$dev_name] = [
-                        'recv_packets' => $line[2],
-                        'recv_bytes' => $line[3],
-                        'send_packets' => $line[10],
-                        'send_bytes' => $line[11],
+                        'recv_packets' => $line[3],
+                        'recv_bytes' => $line[2],
+                        'send_packets' => $line[11],
+                        'send_bytes' => $line[10],
                     ];
                 }
             }
