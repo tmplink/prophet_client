@@ -30,7 +30,7 @@ class Prophet
 
     public function main()
     {
-        $params = getopt('hvdk:', ['kill']);
+        $params = getopt('hvd:k:', ['kill']);
 
         if (isset($params['h'])) {
             $this->help();
@@ -41,7 +41,11 @@ class Prophet
         }
 
         if (isset($params['d'])) {
-            $this->debug = true;
+            if($params['d']==0){
+                $this->debug = false;
+            }else{
+                $this->debug = true;
+            }
         }
 
         if (isset($params['kill'])) {
