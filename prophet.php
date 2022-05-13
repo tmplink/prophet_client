@@ -25,15 +25,22 @@ class Prophet
     private $path_pid = '/var/run/Prophet.pid';
     private $path_log = '/var/log/Prophet.log';
 
+    //是否在后台运行
+    private $daemon = false;
+
     //版本号
     private $version = '0';
 
     public function main()
     {
-        $params = getopt('hvd:k:', ['kill']);
+        $params = getopt('hvbd:k:', ['kill']);
 
         if (isset($params['h'])) {
             $this->help();
+        }
+
+        if (isset($params['b'])) {
+            $this->daemon = true;
         }
 
         if (isset($params['v'])) {
@@ -67,6 +74,7 @@ class Prophet
         echo "Usage: prophet [options]\n";
         echo "Options:\n";
         echo "  -h       Print this help message\n";
+        echo "  -b       Run in background\n";
         echo "  -v       Print version information\n";
         echo "  -d       Enable debug mode\n";
         echo "  -k       Set the API key\n";
@@ -104,6 +112,15 @@ class Prophet
      */
     public function processor_main()
     {
+        //如果不在后台运行，则直接运行
+        if (!$this->daemon) {
+            error_reporting(E_ALL);
+            echo "Prophet v{$this->version}\n";
+            while (true) {
+                $this->processor_collect();
+            }
+            exit;
+        }
         //创建背景进程并退出
         $pid = pcntl_fork();
         if ($pid > 0) {
@@ -419,6 +436,10 @@ class Prophet
         $this->debug;
         if ($this->debug) {
             file_put_contents($this->path_log, date('Y-m-d H:i:s') . " {$msg}\n", FILE_APPEND);
+        }
+        //如果在前台运行，则直接打印日志
+        if($this->daemon===false){
+            echo $msg."\n";
         }
     }
 }
