@@ -3,7 +3,7 @@
 /**
  * Prophet Client
  * Version: 1
- * Date: 2022-05-14
+ * Date: 2022-05-17
  * 
  * 收集 Linux 系统的各项状态指标，然后提交到云端。
  */
@@ -24,12 +24,13 @@ class Prophet
 
     private $path_pid = '/var/run/Prophet.pid';
     private $path_log = '/var/log/Prophet.log';
+    private $path_syslog = '/var/log/Prophet_sys.log';
 
     //是否在后台运行
     private $daemon = false;
 
     //版本号
-    private $version = '0';
+    private $version = '1';
 
     public function main()
     {
@@ -128,6 +129,14 @@ class Prophet
             echo "Process start，pid:{$pid}.\n";
             $this->debug('Prophet process start，pid:' . $pid);
             file_put_contents($this->path_pid, $pid);
+
+            //设置后台运行时的日志
+            if($this->debug){
+                ini_set ('error_reporting', E_ALL);
+                ini_set ('log_errors', 'on');
+                ini_set ('error_log', $this->path_syslog);
+            }
+
             exit;
         } else {
             //子进程处理
