@@ -3,7 +3,7 @@
 /**
  * Prophet Client
  * Version: 1
- * Date: 2022-05-17
+ * Date: 2022-05-19
  * 
  * 收集 Linux 系统的各项状态指标，然后提交到云端。
  */
@@ -49,9 +49,9 @@ class Prophet
         }
 
         if (isset($params['d'])) {
-            if($params['d']==0){
+            if ($params['d'] == 0) {
                 $this->debug = false;
-            }else{
+            } else {
                 $this->debug = true;
             }
         }
@@ -129,14 +129,6 @@ class Prophet
             echo "Process start，pid:{$pid}.\n";
             $this->debug('Prophet process start，pid:' . $pid);
             file_put_contents($this->path_pid, $pid);
-
-            //设置后台运行时的日志
-            if($this->debug){
-                ini_set ('error_reporting', E_ALL);
-                ini_set ('log_errors', 'on');
-                ini_set ('error_log', $this->path_syslog);
-            }
-
             exit;
         } else {
             //子进程处理
@@ -146,6 +138,17 @@ class Prophet
             fclose(STDIN);
             fclose(STDOUT);
             fclose(STDERR);
+
+            //设置后台运行时的日志
+            if ($this->debug) {
+                ini_set('error_reporting', E_ALL);
+                ini_set('log_errors', 'on');
+                ini_set('display_errors', 'off');
+                ini_set('error_log', $this->path_syslog);
+            }else{
+                error_reporting(0);
+            }
+
 
             //启动收集程序
             while (true) {
@@ -165,19 +168,21 @@ class Prophet
         $data['load'] = $this->get_load();
 
         //发送
-        $this->post_data($this->api_url, [
+        $send_status = $this->post_data($this->api_url, [
             'action' => 'collect',
             'key' => $this->api_key,
             'data' => $data
         ]);
 
         //debug
-        $log_cpu = ($data['cpu']['user'] + $data['cpu']['system'] + $data['cpu']['iowait']) / 100 . '%';
-        $log_mem_free = $this->bytes_fomat($data['mem']['free']);
-        $net_rx = $this->bytes_fomat($data['net'][0]['recv_bytes']);
-        $net_tx = $this->bytes_fomat($data['net'][0]['send_bytes']);
-        $net_interface = $data['net'][0]['interface'];
-        $this->debug("Prophet collect data：CPU[{$log_cpu}] MEM Free[{$log_mem_free}] NETWORK[{$net_interface}|rx:{$net_rx}|tx:{$net_tx}]");
+        if ($send_status) {
+            $log_cpu = ($data['cpu']['user'] + $data['cpu']['system'] + $data['cpu']['iowait']) / 100 . '%';
+            $log_mem_free = $this->bytes_fomat($data['mem']['free']);
+            $net_rx = $this->bytes_fomat($data['net'][0]['recv_bytes']);
+            $net_tx = $this->bytes_fomat($data['net'][0]['send_bytes']);
+            $net_interface = $data['net'][0]['interface'];
+            $this->debug("Prophet collect data：CPU[{$log_cpu}] MEM Free[{$log_mem_free}] NETWORK[{$net_interface}|rx:{$net_rx}|tx:{$net_tx}]");
+        }
     }
 
     /**
@@ -411,10 +416,15 @@ class Prophet
                 break;
             }
             $this->debug("Sending data:{$url},Size:{$size} ... failed,retry...");
+            sleep(3);
         }
 
         //重试三次还是失败就跳出
         $this->debug("Sending data:{$url},Size:{$size} {$last}.");
+
+        if ($last === 'error') {
+            return false;
+        }
 
         //检查返回值是否正常
         $rdata = json_decode($sFile, true);
@@ -423,6 +433,8 @@ class Prophet
             $this->debug("{$sFile}");
             $this->debug("===========Debug============");
         }
+
+        return true;
     }
 
     private function bytes_fomat($size, $digits = 2)
@@ -447,8 +459,8 @@ class Prophet
             file_put_contents($this->path_log, date('Y-m-d H:i:s') . " {$msg}\n", FILE_APPEND);
         }
         //如果在前台运行，则直接打印日志
-        if($this->daemon===false){
-            echo $msg."\n";
+        if ($this->daemon === false) {
+            echo $msg . "\n";
         }
     }
 }
