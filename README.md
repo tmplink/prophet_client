@@ -7,8 +7,20 @@
 * /proc/loadavg
 * /proc/net/dev
 
-另外，通过 **df** 命令，可以获取到磁盘的使用情况。
-这个探针需要运行在 PHP7 以上的版本。
+# 安装
+```shell
+curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sh
+```
 
-一般用法：**php prophet.php -k your_key**   
+# 运行
+可以到微林(https://vx.link)的先知服务中，创建监控点后获取直接运行对应钥匙的启动命令。  
+一般用法：**prophet -k your_key**   
 默认打开了 **debug** 模式，可以通过 **-d 0** 参数关闭。
+
+# 更新
+此更新脚本会自动重启正在运行中的探针
+```shell
+curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sh
+```
+
+这个探针需要运行在 PHP7 以上的版本。

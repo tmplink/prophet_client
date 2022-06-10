@@ -1,9 +1,10 @@
+#!/usr/bin/php
 <?php
 
 /**
  * Prophet Client
- * Version: 1
- * Date: 2022-05-19
+ * Version: 2
+ * Date: 2022-06-10
  * 
  * 收集 Linux 系统的各项状态指标，然后提交到云端。
  */
@@ -22,9 +23,10 @@ class Prophet
     //是否启用日志
     private $debug = true;
 
-    private $path_pid = '/var/run/Prophet.pid';
-    private $path_log = '/var/log/Prophet.log';
-    private $path_syslog = '/var/log/Prophet_sys.log';
+    private $path_pid = '/var/run/prophet.pid';
+    private $path_log = '/var/log/prophet.log';
+    private $path_key = '/var/log/prophet.key';
+    private $path_syslog = '/var/log/prophet_sys.log';
 
     //是否在后台运行
     private $daemon = false;
@@ -60,11 +62,41 @@ class Prophet
             $this->kill();
         }
 
+        if (isset($params['restart'])) {
+            $this->restart();
+        }
+
         if (isset($params['k'])) {
-            $this->api_key = $params['k'];
+            $this->set_key($params['k']);
+        }else{
+            $this->read_key();
         }
 
         $this->processor_main();
+    }
+
+    /**
+     * 读取钥匙
+     */
+    private function read_key(){
+        $key = file_get_contents($this->path_key);
+        if ($key) {
+            $this->api_key = $key;
+        }
+    }
+
+    /**
+     * 设置钥匙
+     */
+    private function set_key($key){
+        $old_key = $this->read_key();
+        //如果新设置的钥匙与旧的钥匙不一致，则采用新的钥匙
+        if ($key != $old_key&&!empty($key)) {
+            file_put_contents($this->path_key, $key);
+            $this->api_key = $key;
+        }else{
+            $this->api_key = $old_key;
+        }
     }
 
     /**
@@ -74,12 +106,13 @@ class Prophet
     {
         echo "Usage: prophet [options]\n";
         echo "Options:\n";
-        echo "  -h       Print this help message\n";
-        echo "  -b       Run in background\n";
-        echo "  -v       Print version information\n";
-        echo "  -d       Enable debug mode\n";
-        echo "  -k       Set the API key\n";
-        echo "  --kill   Kill the running process\n";
+        echo "  -h        Print this help message\n";
+        echo "  -b        Run in background\n";
+        echo "  -v        Print version information\n";
+        echo "  -d        Enable debug mode\n";
+        echo "  -k        Set the API key\n";
+        echo "  --resatrt Restart\n";
+        echo "  --kill    Kill the running process\n";
         exit;
     }
 
@@ -106,6 +139,24 @@ class Prophet
             echo "Prophet is not running.\n";
         }
         exit;
+    }
+
+    /**
+     * 重启进程
+     */
+    private function restart(){
+        //结束此前进程
+        $pid = file_get_contents($this->path_pid);
+        if ($pid) {
+            posix_kill($pid, 9);
+            unlink($this->path_pid);
+        }
+        //使用重启命令时，会直接将新进程设置到后台运行
+        $this->daemon = true;
+        //使用重启命令时，关闭 Debug
+        $this->debug = false;
+        //启动新的守护进程
+        $this->processor_main();
     }
 
     /**
