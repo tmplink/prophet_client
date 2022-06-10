@@ -20,7 +20,7 @@ curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.s
 # 更新
 此更新脚本会自动重启正在运行中的探针
 ```shell
-curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sh
+curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/update.sh' | sh
 ```
 
 这个探针需要运行在 PHP7 以上的版本。

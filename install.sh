@@ -5,4 +5,4 @@ curl -o /usr/bin/prophet https://raw.githubusercontent.com/tmplink/prophet_clien
 # Make executable
 chmod 777 /usr/bin/prophet
 
-echo "Prophet installed\n".
+echo "Prophet installed".
