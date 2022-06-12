@@ -3,8 +3,8 @@
 
 /**
  * Prophet Client
- * Version: 2
- * Date: 2022-06-10
+ * Version: 3
+ * Date: 2022-06-12
  * 
  * 收集 Linux 系统的各项状态指标，然后提交到云端。
  */
@@ -397,6 +397,10 @@ class Prophet
             }
             $return[] = [
                 'interface' => $key,
+                'recv_total_packets' => $t2[$key]['recv_packets'],
+                'recv_total_bytes' => $t2[$key]['recv_bytes'],
+                'send_total_packets' => $t2[$key]['send_packets'],
+                'send_total_bytes' => $t2[$key]['send_bytes'],
                 'recv_packets' => ($t2[$key]['recv_packets'] - $t1[$key]['recv_packets']),
                 'recv_bytes' => ($t2[$key]['recv_bytes'] - $t1[$key]['recv_bytes']),
                 'send_packets' => ($t2[$key]['send_packets'] - $t1[$key]['send_packets']),
