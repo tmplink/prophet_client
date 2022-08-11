@@ -3,8 +3,8 @@
 
 /**
  * Prophet Client
- * Version: 3
- * Date: 2022-06-12
+ * Version: 5
+ * Date: 2022-08-12
  * 
  * 收集 Linux 系统的各项状态指标，然后提交到云端。
  */
@@ -428,10 +428,10 @@ class Prophet
                 if (strpos($dev_name, 'lo') === false && strpos($dev_name, 'ifb') === false) {
                     //获取发送和接收的数据包数量以及字节数
                     $net[$dev_name] = [
-                        'recv_packets' => $line[3],
-                        'recv_bytes' => $line[2],
-                        'send_packets' => $line[11],
-                        'send_bytes' => $line[10],
+                        'recv_packets' => (int)$line[3],
+                        'recv_bytes' => (int)$line[2],
+                        'send_packets' => (int)$line[11],
+                        'send_bytes' => (int)$line[10],
                     ];
                 }
             }
