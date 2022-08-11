@@ -32,7 +32,7 @@ class Prophet
     private $daemon = false;
 
     //版本号
-    private $version = '1';
+    private $version = '5';
 
     public function main()
     {
