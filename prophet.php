@@ -3,7 +3,7 @@
 
 /**
  * Prophet Client
- * Version: 5
+ * Version: 6
  * Date: 2022-08-12
  * 
  * 收集 Linux 系统的各项状态指标，然后提交到云端。
@@ -32,7 +32,7 @@ class Prophet
     private $daemon = false;
 
     //版本号
-    private $version = '5';
+    private $version = '6';
 
     public function main()
     {
@@ -221,7 +221,7 @@ class Prophet
         //发送
         $send_status = $this->post_data($this->api_url, [
             'action' => 'collect',
-            'key' => $this->api_key,
+            'archive_key' => $this->api_key,
             'data' => $data
         ]);
 
