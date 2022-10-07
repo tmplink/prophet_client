@@ -9,7 +9,7 @@
 
 # 安装
 ```shell
-curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sh
+curl 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | bash install.sh -k <API_KEY>
 ```
 
 # 运行
@@ -27,6 +27,7 @@ echo "prophet -k your_key -b" >> /etc/rc.local
 # 更新
 此更新脚本会自动重启正在运行中的探针
 ```shell
+sudo su # obtain root permission
 curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/update.sh' | sh
 ```
 
