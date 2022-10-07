@@ -9,19 +9,17 @@
 
 # 安装
 ```shell
-curl 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | bash install.sh -k <API_KEY>
+curl -o install.sh 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sudo bash install.sh -k <API_KEY>
 ```
 
 # 运行
+执行完，上述脚本已经在运行了。
+
 可以到[微林](https://vx.link)的先知服务中，创建监控点后获取直接运行对应钥匙的启动命令。  
 一般用法：**prophet -k your_key**   
 默认打开了 **debug** 模式，可以通过 **-d 0** 参数关闭。
 后台运行：**prophet -k your_key -b**
 
-CentOS 用户可以添加到启动命令中自动启动。
-```shell
-echo "prophet -k your_key -b" >> /etc/rc.local
-```
 
 
 # 更新
