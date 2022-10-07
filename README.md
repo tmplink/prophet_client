@@ -7,26 +7,26 @@
 * /proc/loadavg
 * /proc/net/dev
 
-# 安装
+# 安装 & 运行
+
+请先到[微林](https://vx.link)的**先知**服务中，创建监控点，以获取直接运行对应钥匙。使用key替换如下命令:  
 ```shell
-curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sh
+sudo curl -o install.sh 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sudo bash install.sh -k <API_KEY>
 ```
 
-# 运行
-可以到[微林](https://vx.link)的先知服务中，创建监控点后获取直接运行对应钥匙的启动命令。  
+执行完上述脚本，如果无报错，探针服务就已经在运行了。
+
+# 用法
 一般用法：**prophet -k your_key**   
 默认打开了 **debug** 模式，可以通过 **-d 0** 参数关闭。
 后台运行：**prophet -k your_key -b**
 
-CentOS 用户可以添加到启动命令中自动启动。
-```shell
-echo "prophet -k your_key -b" >> /etc/rc.local
-```
 
 
 # 更新
 此更新脚本会自动重启正在运行中的探针
 ```shell
+sudo su # obtain root permission
 curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/update.sh' | sh
 ```
 
