@@ -5,9 +5,9 @@ set -e
 FRED="\033[31m" # foreground red
 FGRN="\033[32m" # foreground green
 
-### -----------stop if there no privileges---------------------
+### -----------stop if there is no privileges---------------------
 if (($EUID != 0)); then
-    echo "Please run as root"
+    echo -e "$FRED Please run with root"
     exit
 fi
 
@@ -33,11 +33,11 @@ if [ -z "${k}" ]; then
 fi
 
 ### -----------to tell user what I got the key---------------------
-echo "you key is '${k}'."
+# echo "you key is '${k}'."
 
-### -----------to make sure php is set up, otherwise shell would be stopped.------------------
+### -----------to make sure that php is set up, otherwise shell would be stopped.------------------
 if ! command -v php &>/dev/null; then
-    echo -E "$FRED php could not be found!"
+    echo -e "$FRED php could not be found!"
     echo "Please install php-cli in addvance."
     exit
 fi
@@ -55,4 +55,4 @@ sudo echo "prophet -k ${k} -b" >>/etc/rc.local
 
 ## ----------------to start this service immediately.----------------
 nohup sudo prophet -k ${k} -b -d 0 >/dev/null 2>&1 &
-echo -e "$FGRN Prophet service started.".
+echo -e "$FGRN Prophet service started."
