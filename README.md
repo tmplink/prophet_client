@@ -11,15 +11,23 @@
 
 请先到[微林](https://vx.link)的**先知**服务中，创建监控点，以获取直接运行对应钥匙。使用key替换如下命令:  
 ```shell
-sudo curl -o install.sh 'https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh' | sudo bash install.sh -k <API_KEY>
+bash <(curl -s https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh) -k  <API_KEY>
 ```
 
 执行完上述脚本，如果无报错，探针服务就已经在运行了。
 
 # 用法
+
 一般用法：**prophet -k your_key**   
-默认打开了 **debug** 模式，可以通过 **-d 0** 参数关闭。
-后台运行：**prophet -k your_key -b**
+
+后台运行用法：**prophet -k your_key -b**。
+
+停止服务：**prophet --kill**。
+
+重启服务：**prophet --resatrt**。
+
+默认打开了 **debug** 模式，可以通过 **-d 0** 参数关闭；
+
 
 
 
