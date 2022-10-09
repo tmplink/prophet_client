@@ -1,6 +1,8 @@
 # Prophet 探针
-这是基于 PHP 编写的服务器探针程序，我们尽可能地为源代码添加了注释，以帮助大家理解它的运作原理。  
-探针本身不复杂，并且性能优秀，它主要读取了 Linux 系统的几个地方的数据。整理后发送到 API 服务归档。 
+这是基于 PHP 编写的服务器探针程序。
+它的性能优秀，不过实现本身不复杂。主要读取了 Linux 系统的几处数据，整理后发送到 API 服务归档。 
+
+另外，我们尽可能地为源代码添加了注释，以帮助大家理解它的运作原理。  
 
 * /proc/stat
 * /proc/meminfo
@@ -16,23 +18,23 @@ bash <(curl -s https://raw.githubusercontent.com/tmplink/prophet_client/main/ins
 
 执行完上述脚本，如果无报错，探针服务就已经在运行了。
 
-# 用法
+# 使用
 
-一般用法：**prophet -k your_key**   
+普通启动：**prophet -k your_key**   
 
-后台运行用法：**prophet -k your_key -b**。
+> 默认打开了 **debug** 模式，可以通过 **-d 0** 参数关闭；
+
+后台启动：**prophet -k your_key -b**。
 
 停止服务：**prophet --kill**。
 
 重启服务：**prophet --resatrt**。
 
-默认打开了 **debug** 模式，可以通过 **-d 0** 参数关闭；
-
 
 
 
 # 更新
-此更新脚本会自动重启正在运行中的探针
+此更新脚本会自动重启正在运行中的探针。
 ```shell
 sudo su # obtain root permission
 curl -k 'https://raw.githubusercontent.com/tmplink/prophet_client/main/update.sh' | sh
