@@ -11,8 +11,6 @@
 
 # 安装 & 运行
 
-需要 **root** 权限，通常，这些命令是通过 sudo 来执行。 
-
 请先到[微林](https://vx.link)的**先知**服务中，创建监控点，以获取直接运行对应钥匙。使用key替换如下命令:  
 ```shell
 bash <(curl -s https://raw.githubusercontent.com/tmplink/prophet_client/main/install.sh) -k  <API_KEY>
